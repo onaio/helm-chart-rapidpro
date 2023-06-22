@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-courier
+  labels:
+    app.kubernetes.io/component: courier
+    {{- include "courier.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.courier.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  serviceName: {{ include "rapidpro.fullname" . }}-courier
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: courier
+      {{- include "courier.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.courier.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: courier
+        {{- include "courier.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.courier.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rapidpro.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.courier.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: spool
+          emptyDir: {}
+      containers:
+        - name: {{ .Chart.Name }}-courier
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.courier.image.repository }}:{{ .Values.courier.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.courier.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-courier-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-courier-secrets
+          resources:
+            {{- toYaml .Values.courier.resources | nindent 12 }}
+          volumeMounts:
+            - name: spool
+              mountPath: {{ .Values.courier.spoolDirectory }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+      {{- with .Values.courier.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.courier.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.courier.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-mailroom-config
+  labels:
+    {{- include "mailroom.labels" . | nindent 4 }}
+data:
+  MAILROOM_ADDRESS: {{ .Values.mailroom.listenAddress | quote }}
+  MAILROOM_DOMAIN: {{ .Values.rapidproDomain | quote }}
+  MAILROOM_AWS_ACCESS_KEY_ID: {{ .Values.awsAccessKeyId | quote }}
+  MAILROOM_S3_MEDIA_BUCKET: {{ .Values.awsStorageBucketName | quote  }}
+  MAILROOM_S3_REGION: {{ .Values.awsS3RegionName | quote }}
+  MAILROOM_REDIS: {{ include "rapidpro.redisUrl" . | quote }}
+  MAILROOM_ELASTIC: {{ include "rapidpro.elasticsearchUrl" . | quote }}
+{{- range $key, $value := .Values.mailroom.extraEnvVars }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}

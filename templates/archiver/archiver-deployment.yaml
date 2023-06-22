@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-archiver
+  labels:
+    {{- include "archiver.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.archiver.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "archiver.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.archiver.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "archiver.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.archiver.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rapidpro.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.archiver.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-archiver
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.archiver.image.repository }}:{{ .Values.archiver.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.archiver.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-archiver-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-archiver-secrets
+          resources:
+            {{- toYaml .Values.archiver.resources | nindent 12 }}
+      {{- with .Values.archiver.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.archiver.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.archiver.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
