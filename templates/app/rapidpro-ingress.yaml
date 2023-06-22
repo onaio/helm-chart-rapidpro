@@ -1,0 +1,83 @@
+{{- if .Values.rapidpro.ingress.enabled -}}
+{{- $fullName := include "rapidpro.fullname" . -}}
+{{- $rapidproServicePort := .Values.rapidpro.service.targetPort -}}
+{{- $mailroomServicePort := .Values.mailroom.service.port -}}
+{{- $courierServicePort := .Values.courier.service.port -}}
+{{- if and .Values.rapidpro.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.rapidpro.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.rapidpro.ingress.annotations "kubernetes.io/ingress.class" .Values.rapidpro.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-app
+  labels:
+    {{- include "rapidpro.labels" . | nindent 4 }}
+  {{- with .Values.rapidpro.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.rapidpro.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.rapidpro.ingress.className }}
+  {{- end }}
+  {{- if .Values.rapidpro.ingress.tls }}
+  tls:
+    {{- range .Values.rapidpro.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.rapidpro.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-app
+                port:
+                  number: {{ $rapidproServicePort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-app
+              servicePort: {{ $rapidproServicePort }}
+              {{- end }}
+          - path: /mr/
+            pathType: Prefix
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-mailroom
+                port:
+                  number: {{ $mailroomServicePort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-mailroom
+              servicePort: {{ $mailroomServicePort }}
+              {{- end }}
+          - path: /c/
+            pathType: Prefix
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-courier
+                port:
+                  number: {{ $courierServicePort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-courier
+              servicePort: {{ $courierServicePort }}
+              {{- end }}
+      {{- end }}
+{{- end }}

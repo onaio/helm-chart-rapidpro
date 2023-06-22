@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-celery
+  labels:
+    {{- include "rapidpro.labels" . | nindent 4 }}
+    app.kubernetes.io/component: celery
+spec:
+  serviceName: {{ include "rapidpro.fullname" . }}-celery
+  {{- if not .Values.rapidpro.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "rapidpro.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: celery
+  template:
+    metadata:
+      {{- with .Values.rapidpro.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rapidpro.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: celery
+    spec:
+      {{- with .Values.rapidpro.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rapidpro.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.rapidpro.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-celery-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.rapidpro.image.repository }}:{{ .Values.rapidpro.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.rapidpro.image.pullPolicy }}
+          command: ["/venv/bin/celery"]
+          args: [
+              '--app=temba',
+              'worker',
+              '--loglevel=INFO',
+              '--queues=flows,msgs,handler,celery,batch',
+              '--max-tasks-per-child=10',
+              '--autoscale=1,5',
+            ]
+          env:
+            - name: MANAGEPY_COLLECTSTATIC
+              value: "off"
+            - name: MANAGEPY_MIGRATE
+              value: "off"
+            - name: MANAGEPY_COMPRESS
+              value: "off"
+            - name: CLEAR_COMPRESSOR_CACHE
+              value: "off"
+            - name: STARTUP_CMD
+              value: "/venv/bin/celery --app=temba worker --loglevel=INFO --queues=flows,msgs,handler,celery,batch --max-tasks-per-child=10 --autoscale=1,5"
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-app-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-app-secrets
+          resources:
+            {{- toYaml .Values.rapidpro.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-celery-beat
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.rapidpro.image.repository }}:{{ .Values.rapidpro.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.rapidpro.image.pullPolicy }}
+          command: ['/venv/bin/celery']
+          args: [
+              "--app=temba",
+              "beat",
+              "--loglevel=info",
+            ]
+          env:
+            - name: MANAGEPY_COLLECTSTATIC
+              value: "off"
+            - name: MANAGEPY_MIGRATE
+              value: "off"
+            - name: MANAGEPY_COMPRESS
+              value: "off"
+            - name: CLEAR_COMPRESSOR_CACHE
+              value: "off"
+            - name: STARTUP_CMD
+              value: "/venv/bin/celery beat --app=temba  --loglevel=info"
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-app-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-app-secrets
+          resources:
+            {{- toYaml .Values.rapidpro.resources | nindent 12 }}
+      {{- with .Values.rapidpro.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rapidpro.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rapidpro.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

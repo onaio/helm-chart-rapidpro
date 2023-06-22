@@ -1,0 +1,8 @@
+NAME: rapidpro
+LAST DEPLOYED: Wed Feb 15 13:55:19 2023
+NAMESPACE: rapidpro
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+  http://<RAPIDPRO-URL>/

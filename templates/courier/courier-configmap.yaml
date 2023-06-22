@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-courier-config
+  labels:
+    {{- include "courier.labels" . | nindent 4 }}
+data:
+  COURIER_DOMAIN: {{ .Values.rapidproDomain | quote }}
+  COURIER_AWS_ACCESS_KEY_ID: {{ .Values.awsAccessKeyId | quote }}
+  COURIER_S3_MEDIA_BUCKET: {{ .Values.awsStorageBucketName | quote  }}
+  COURIER_S3_REGION: {{ .Values.awsS3RegionName | quote }}
+  COURIER_REDIS: {{ include "rapidpro.redisUrl" . | quote }}
+  COURIER_SPOOL_DIR: {{ .Values.courier.spoolDirectory | quote }}
+{{- range $key, $value := .Values.courier.extraEnvVars }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}

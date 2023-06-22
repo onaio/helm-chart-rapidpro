@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-mailroom
+  labels:
+    app.kubernetes.io/component: mailroom
+    {{- include "mailroom.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "rapidpro.fullname" . }}-mailroom
+  {{- if not .Values.mailroom.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: mailroom
+      {{- include "mailroom.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.mailroom.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: mailroom
+        {{- include "mailroom.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.mailroom.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rapidpro.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.mailroom.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-mailroom
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.mailroom.image.repository }}:{{ .Values.mailroom.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.mailroom.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.mailroom.service.targetPort }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-mailroom-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-mailroom-secrets
+          resources:
+            {{- toYaml .Values.mailroom.resources | nindent 12 }}
+      {{- with .Values.mailroom.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mailroom.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mailroom.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

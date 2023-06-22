@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-app
+  labels:
+    {{- include "rapidpro.labels" . | nindent 4 }}
+    app.kubernetes.io/component: app
+spec:
+  {{- if not .Values.rapidpro.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  serviceName: {{ include "rapidpro.fullname" . }}-app
+  selector:
+    matchLabels:
+      {{- include "rapidpro.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      {{- with .Values.rapidpro.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rapidpro.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+    spec:
+      {{- with .Values.rapidpro.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rapidpro.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.rapidpro.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: rapidpro-static-volume
+          emptyDir: {}
+      containers:
+        - name: {{ .Chart.Name }}-app
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.rapidpro.image.repository }}:{{ .Values.rapidpro.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.rapidpro.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.rapidpro.service.targetPort }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          volumeMounts:
+            - name: rapidpro-static-volume
+              mountPath: /rapidpro/sitestatic/
+          envFrom:
+            - configMapRef:
+                name: {{ include "rapidpro.fullname" . }}-app-config
+            - secretRef:
+                name: {{ include "rapidpro.fullname" . }}-app-secrets
+          resources:
+            {{- toYaml .Values.rapidpro.resources | nindent 12 }}
+      {{- with .Values.rapidpro.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rapidpro.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.rapidpro.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

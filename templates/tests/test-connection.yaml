@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "rapidpro.fullname" . }}-test-connection"
+  labels:
+    {{- include "rapidpro.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-app
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "rapidpro.fullname" . }}:{{ .Values.rapidpro.service.targetPort  }}']
+    - name: test-mailroom
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "rapidpro.fullname" . }}:{{ .Values.mailroom.service.targetPort  }}']
+  restartPolicy: Never

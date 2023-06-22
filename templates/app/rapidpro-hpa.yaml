@@ -1,0 +1,28 @@
+{{- if .Values.rapidpro.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "rapidpro.fullname" . }}-app-hpa
+  labels:
+    {{- include "rapidpro.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "rapidpro.fullname" . }}
+  minReplicas: {{ .Values.rapidpro.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.rapidpro.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.rapidpro.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.rapidpro.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.rapidpro.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.rapidpro.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
