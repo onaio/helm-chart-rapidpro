@@ -5,7 +5,7 @@ entries:
       category: Analytics
     apiVersion: v2
     appVersion: 8.6.0
-    created: "2023-08-09T16:41:28.248969+03:00"
+    created: "2023-08-09T18:26:33.307673+03:00"
     dependencies:
     - condition: global.kibanaEnabled
       name: kibana
@@ -32,14 +32,14 @@ entries:
     - https://github.com/bitnami/containers/tree/main/bitnami/elasticsearch
     - https://www.elastic.co/products/elasticsearch
     urls:
-    - https://onaio.github.com/helm-chart-rapidpro/charts/elasticsearch-19.5.8.tgz
+    - https://onaio.github.io/helm-chart-rapidpro/charts/elasticsearch-19.5.8.tgz
     version: 19.5.8
   postgresql:
   - annotations:
       category: Database
     apiVersion: v2
     appVersion: 15.0.0
-    created: "2023-08-09T16:41:28.252736+03:00"
+    created: "2023-08-09T18:26:33.312036+03:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -67,12 +67,12 @@ entries:
     - https://github.com/bitnami/containers/tree/main/bitnami/postgresql
     - https://www.postgresql.org/
     urls:
-    - https://onaio.github.com/helm-chart-rapidpro/charts/postgresql-12.0.0.tgz
+    - https://onaio.github.io/helm-chart-rapidpro/charts/postgresql-12.0.0.tgz
     version: 12.0.0
   rapidpro:
   - apiVersion: v2
     appVersion: v7.4.2
-    created: "2023-08-09T16:41:28.241459+03:00"
+    created: "2023-08-09T18:26:33.300597+03:00"
     dependencies:
     - condition: redis.enabled
       name: redis
@@ -95,7 +95,34 @@ entries:
     name: rapidpro
     type: application
     urls:
-    - https://onaio.github.com/helm-chart-rapidpro/rapidpro-1.0.0.tgz
+    - https://onaio.github.io/helm-chart-rapidpro/rapidpro-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v7.4.2
+    created: "2023-08-09T18:26:33.33175+03:00"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.6.0
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.5.8
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.0.0
+    description: A Helm chart that Deploys RapidPro and its dependency
+    digest: ed440f59f28124e1a6272f9d7a0ffc5b80e3bf3c888885c53140b8bb1b8cc3ed
+    icon: https://raw.githubusercontent.com/rapidpro/rapidpro/gh-pages/images/rapidpro.ico
+    maintainers:
+    - email: techops@ona.io
+      name: Ona Engineering
+    name: rapidpro
+    type: application
+    urls:
+    - https://onaio.github.io/helm-chart-rapidpro/docs/rapidpro-1.0.0.tgz
     version: 1.0.0
   redis:
   - annotations:
@@ -103,7 +130,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 7.0.8
-    created: "2023-08-09T16:41:28.25685+03:00"
+    created: "2023-08-09T18:26:33.316207+03:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -127,6 +154,6 @@ entries:
     sources:
     - https://github.com/bitnami/containers/tree/main/bitnami/redis
     urls:
-    - https://onaio.github.com/helm-chart-rapidpro/charts/redis-17.6.0.tgz
+    - https://onaio.github.io/helm-chart-rapidpro/charts/redis-17.6.0.tgz
     version: 17.6.0
-generated: "2023-08-09T16:41:28.224828+03:00"
+generated: "2023-08-09T18:26:33.283841+03:00"
