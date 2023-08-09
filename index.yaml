@@ -1,0 +1,132 @@
+apiVersion: v1
+entries:
+  elasticsearch:
+  - annotations:
+      category: Analytics
+    apiVersion: v2
+    appVersion: 8.6.0
+    created: "2023-08-09T16:41:28.248969+03:00"
+    dependencies:
+    - condition: global.kibanaEnabled
+      name: kibana
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.x.x
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: Elasticsearch is a distributed search and analytics engine. It is
+      used for web search, log monitoring, and real-time analytics. Ideal for Big
+      Data applications.
+    digest: 71c2a8e7760ed65d1f62f3f2f3f82e65d8c68c9fbd3acaa7e214b23dbed33edc
+    home: https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
+    icon: https://bitnami.com/assets/stacks/elasticsearch/img/elasticsearch-stack-220x234.png
+    keywords:
+    - elasticsearch
+    maintainers:
+    - name: Bitnami
+      url: https://github.com/bitnami/charts
+    name: elasticsearch
+    sources:
+    - https://github.com/bitnami/containers/tree/main/bitnami/elasticsearch
+    - https://www.elastic.co/products/elasticsearch
+    urls:
+    - https://onaio.github.com/helm-chart-rapidpro/charts/elasticsearch-19.5.8.tgz
+    version: 19.5.8
+  postgresql:
+  - annotations:
+      category: Database
+    apiVersion: v2
+    appVersion: 15.0.0
+    created: "2023-08-09T16:41:28.252736+03:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: PostgreSQL (Postgres) is an open source object-relational database
+      known for reliability and data integrity. ACID-compliant, it supports foreign
+      keys, joins, views, triggers and stored procedures.
+    digest: 4b0fdf7e3afc60279e0c6cbecd565be828d4bc9dc52dcc3680cd4782ccc1e785
+    home: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+    icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-220x234.png
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    - sql
+    - replication
+    - cluster
+    maintainers:
+    - name: Bitnami
+      url: https://github.com/bitnami/charts
+    name: postgresql
+    sources:
+    - https://github.com/bitnami/containers/tree/main/bitnami/postgresql
+    - https://www.postgresql.org/
+    urls:
+    - https://onaio.github.com/helm-chart-rapidpro/charts/postgresql-12.0.0.tgz
+    version: 12.0.0
+  rapidpro:
+  - apiVersion: v2
+    appVersion: v7.4.2
+    created: "2023-08-09T16:41:28.241459+03:00"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.6.0
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.5.8
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.0.0
+    description: A Helm chart that Deploys RapidPro and its dependency
+    digest: ed440f59f28124e1a6272f9d7a0ffc5b80e3bf3c888885c53140b8bb1b8cc3ed
+    icon: https://raw.githubusercontent.com/rapidpro/rapidpro/gh-pages/images/rapidpro.ico
+    maintainers:
+    - email: techops@ona.io
+      name: Ona Engineering
+    name: rapidpro
+    type: application
+    urls:
+    - https://onaio.github.com/helm-chart-rapidpro/rapidpro-1.0.0.tgz
+    version: 1.0.0
+  redis:
+  - annotations:
+      category: Database
+      licenses: Apache-2.0
+    apiVersion: v2
+    appVersion: 7.0.8
+    created: "2023-08-09T16:41:28.25685+03:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: Redis(R) is an open source, advanced key-value store. It is often
+      referred to as a data structure server since keys can contain strings, hashes,
+      lists, sets and sorted sets.
+    digest: 7ea314d022bd783cdc0107e67a9bfbd771dc09107e9b4b08c3ca23c16e447a1d
+    home: https://github.com/bitnami/charts/tree/main/bitnami/redis
+    icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png
+    keywords:
+    - redis
+    - keyvalue
+    - database
+    maintainers:
+    - name: Bitnami
+      url: https://github.com/bitnami/charts
+    name: redis
+    sources:
+    - https://github.com/bitnami/containers/tree/main/bitnami/redis
+    urls:
+    - https://onaio.github.com/helm-chart-rapidpro/charts/redis-17.6.0.tgz
+    version: 17.6.0
+generated: "2023-08-09T16:41:28.224828+03:00"
