@@ -32,7 +32,7 @@ entries:
     - https://github.com/bitnami/containers/tree/main/bitnami/elasticsearch
     - https://www.elastic.co/products/elasticsearch
     urls:
-    - https://onaio.github.iohelm-chart-rapidpro/charts/elasticsearch-19.5.8.tgz
+    - https://onaio.github.io./helm-chart-rapidpro/charts/elasticsearch-19.5.8.tgz
     version: 19.5.8
   postgresql:
   - annotations:
@@ -67,7 +67,7 @@ entries:
     - https://github.com/bitnami/containers/tree/main/bitnami/postgresql
     - https://www.postgresql.org/
     urls:
-    - https://onaio.github.iohelm-chart-rapidpro/charts/postgresql-12.0.0.tgz
+    - https://onaio.github.io./helm-chart-rapidpro/charts/postgresql-12.0.0.tgz
     version: 12.0.0
   rapidpro:
   - apiVersion: v2
@@ -95,7 +95,7 @@ entries:
     name: rapidpro
     type: application
     urls:
-    - https://onaio.github.iohelm-chart-rapidpro/rapidpro-1.0.0.tgz
+    - https://onaio.github.io./helm-chart-rapidpro/rapidpro-1.0.0.tgz
     version: 1.0.0
   redis:
   - annotations:
@@ -127,6 +127,6 @@ entries:
     sources:
     - https://github.com/bitnami/containers/tree/main/bitnami/redis
     urls:
-    - https://onaio.github.iohelm-chart-rapidpro/charts/redis-17.6.0.tgz
+    - https://onaio.github.io./helm-chart-rapidpro/charts/redis-17.6.0.tgz
     version: 17.6.0
 generated: "2023-08-09T16:41:28.224828+03:00"
