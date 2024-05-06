@@ -76,7 +76,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Archiver labels
 */}}
 {{- define "archiver.labels" -}}
-{{- if .Values.archiver }}
+{{- if .Values.archiver.enabled }}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "archiver.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Values.archiver.image.tag | quote }}
@@ -123,7 +123,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}-indexer
 Archiver Selector labels
 */}}
 {{- define "archiver.selectorLabels" -}}
-{{- if .Values.archiver }}
+{{- if .Values.archiver.enabled }}
 app.kubernetes.io/name: {{ include "rapidpro.name" . }}-archiver
 app.kubernetes.io/instance: {{ .Release.Name }}-archiver
 {{- end }}

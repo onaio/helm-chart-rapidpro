@@ -155,6 +155,7 @@ serviceAccount:
   name: ""
 
 archiver:
+  enabled: false
   image:
     pullPolicy: IfNotPresent
     repository: docker.io/praekeltfoundation/rp-archiver
