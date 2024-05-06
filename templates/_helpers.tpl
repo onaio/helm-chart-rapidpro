@@ -76,10 +76,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Archiver labels
 */}}
 {{- define "archiver.labels" -}}
+{{- if .Values.archiver }}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "archiver.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Values.archiver.image.tag | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 {{- end }}
 
 {{/*
