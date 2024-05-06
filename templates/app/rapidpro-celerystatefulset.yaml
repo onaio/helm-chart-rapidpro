@@ -64,6 +64,16 @@ spec:
                 name: {{ include "rapidpro.fullname" . }}-app-secrets
           resources:
             {{- toYaml .Values.rapidpro.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command: [
+                "/bin/bash",
+                "-c",
+                "celery --app=temba -b redis://redis-master.rapidpro.svc.cluster.local:6379/15 inspect ping -d celery@rapidpro-celery-0 | grep -q OK"
+              ]
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            failureThreshold: 3
         - name: {{ .Chart.Name }}-celery-beat
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
