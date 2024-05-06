@@ -123,8 +123,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}-indexer
 Archiver Selector labels
 */}}
 {{- define "archiver.selectorLabels" -}}
+{{- if .Values.archiver }}
 app.kubernetes.io/name: {{ include "rapidpro.name" . }}-archiver
 app.kubernetes.io/instance: {{ .Release.Name }}-archiver
+{{- end }}
 {{- end }}
 
 {{/*
