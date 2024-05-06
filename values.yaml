@@ -56,8 +56,8 @@ rapidpro:
 
   podSecurityContext: {}
   runCollectstatic: "on"
-  initDb: "on"
-  runMigrations: "on"
+  initDb: "off"
+  runMigrations: "off"
   runCompress: "on"
   clearCompressorCache: "off"
   mediaVolume:
