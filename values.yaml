@@ -24,9 +24,9 @@ smtp:
 # Values for the RapidPro Django application
 rapidpro:
   image:
-    repository: praekeltfoundation/rapidpro
+    repository: docker.io/onaio/rapidpro
     pullPolicy: IfNotPresent
-    tag: null
+    tag: v8.0.1
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -83,10 +83,10 @@ mailroom:
     port: 8090
     targetPort: 8090
   image:
-    repository: praekeltfoundation/mailroom
+    repository: docker.io/onaio/mailroom
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: null
+    tag: v8.0.0
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -107,10 +107,10 @@ mailroom:
 
 courier:
   image:
-    repository: praekeltfoundation/courier
+    repository: docker.io/onaio/courier
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: null
+    tag: v8.0.2
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -133,10 +133,10 @@ courier:
 
 indexer:
   image:
-    repository: praekeltfoundation/rp-indexer
+    repository: docker.io/onaio/rp-indexer
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: null
+    tag: v8.0.0
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -158,8 +158,8 @@ archiver:
   enabled: false
   image:
     pullPolicy: IfNotPresent
-    repository: docker.io/praekeltfoundation/rp-archiver
-    tag: v7.0.0
+    repository: docker.io/onaio/rp-archiver
+    tag: v8.0.0
   autoscaling:
     enabled: false
     minReplicas: 1

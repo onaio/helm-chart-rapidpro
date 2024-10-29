@@ -36,9 +36,7 @@ Common labels
 {{- define "rapidpro.labels" -}}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "rapidpro.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.rapidpro.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -48,7 +46,7 @@ Mailroom labels
 {{- define "mailroom.labels" -}}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "mailroom.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.mailroom.image.tag | quote }}
+app.kubernetes.io/version: {{ .Values.mailroom.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -58,7 +56,7 @@ Courier labels
 {{- define "courier.labels" -}}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "courier.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.courier.image.tag | quote }}
+app.kubernetes.io/version: {{ .Values.courier.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -68,7 +66,7 @@ Indexer labels
 {{- define "indexer.labels" -}}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "indexer.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.indexer.image.tag | quote }}
+app.kubernetes.io/version: {{ .Values.indexer.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
@@ -79,7 +77,7 @@ Archiver labels
 {{- if .Values.archiver.enabled }}
 helm.sh/chart: {{ include "rapidpro.chart" . }}
 {{ include "archiver.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.archiver.image.tag | quote }}
+app.kubernetes.io/version: {{ .Values.archiver.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 {{- end }}
